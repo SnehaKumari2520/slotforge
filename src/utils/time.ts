@@ -1,7 +1,10 @@
 // Define what a TimeSlot object looks like
+
+
 export interface TimeSlot {
-  startTime: Date;
-  endTime: Date;
+  startTime: Date | string;
+  endTime: Date | string;
+  title?: string;
 }
 
 // Pass slotA and slotB into the function as arguments

@@ -41,4 +41,4 @@ console.log("Booking 5 (01:00 - 02:00, Clean):", engine.addSlot(booking5));
 
 
 // Check total slots saved (Should be 2)
-console.log("\nTotal Active Bookings:", engine.getSlots().length);
+console.log("\nTotal Active Bookings:", (await engine.getSlots()).length);
