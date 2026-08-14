@@ -37,3 +37,18 @@ app.get("/api/slots", async (req, res) => {
 app.listen(3000, () => {
   console.log("Server is running on port 3000");
 });
+
+app.delete("/api/slots/:id",async(req,res) =>{
+  try{
+
+    const {id} = req.params;
+    await engine.deleteSlot(id);
+    res.status(200).json({message : "slot deleted successfully"})
+
+  } catch(error: any){
+
+    res.status(400).json({ error: error.message });
+
+  }
+
+});
