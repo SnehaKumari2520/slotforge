@@ -43,6 +43,19 @@ export class SlotEngine {
       orderBy: { startTime: "asc" },
     });
   }
+
+  async deleteSlot(id: string){
+    const existing = await prisma.slot.findUnique({where : {id}});
+    if(!existing){
+      throw new Error("SLOT NOT FOUND")
+    }
+
+    // Delete and return the result
+  return await prisma.slot.delete({
+    where: { id },
+  });
+
+  }
 }
 
 

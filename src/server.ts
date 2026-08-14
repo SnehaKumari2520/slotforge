@@ -1,5 +1,6 @@
 import express from "express";
 import { SlotEngine } from "./engine/SlotEngine.js";
+import {CreateSlotSchema} from "./schema/slot.schema.js";
 
 const app = express();
 const engine = new SlotEngine();
@@ -9,10 +10,12 @@ app.use(express.json());
 
 app.post("/api/slots", async (req, res) => {
   try {
-    const { title, startTime, endTime } = req.body;
+    
+
+    const validatedData = CreateSlotSchema.parse(req.body);
     
     // Pass the body parameters to the engine
-    const newSlot = await engine.addSlot({ title, startTime, endTime });
+    const newSlot = await engine.addSlot(validatedData);
     
     // Return the created slot with HTTP status 201
     res.status(201).json(newSlot);
@@ -23,6 +26,7 @@ app.post("/api/slots", async (req, res) => {
 
 app.get("/api/slots", async (req, res) => {
   try {
+
     const slots = await engine.getSlots();
     res.status(200).json(slots);
   } catch (error: any) {
