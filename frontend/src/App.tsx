@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { fetchSlots, createSlot, deleteSlot, type Slot } from "./api";
+import "./App.css";
 
 export function App() {
   const [slots, setSlots] = useState<Slot[]>([]);
@@ -24,7 +25,6 @@ export function App() {
     loadSlots();
   }, []);
 
-  // --- LIVE AVAILABILITY CHECKER ---
   const checkConflict = (): { hasConflict: boolean; conflictingSlot?: Slot } => {
     if (!startTime || !endTime) return { hasConflict: false };
 
@@ -112,7 +112,6 @@ export function App() {
     });
   };
 
-  // Safe percentage calculator for visual timeline bar (0 to 24 Hours)
   const getSlotPosition = (slot: Slot) => {
     const start = new Date(slot.startTime);
     const end = new Date(slot.endTime);
@@ -123,7 +122,6 @@ export function App() {
     let left = (startMinutes / 1440) * 100;
     let width = ((endMinutes - startMinutes) / 1440) * 100;
 
-    // Clamp values so blocks never break the UI container
     left = Math.max(0, Math.min(left, 100));
     width = Math.max(2, Math.min(width, 100 - left));
 
@@ -131,34 +129,34 @@ export function App() {
   };
 
   return (
-    <div style={styles.page}>
-      <header style={styles.header}>
-        <div style={styles.badge}>SLOTFORGE v1.0 • PRO SCHEDULER</div>
-        <h1 style={styles.title}>Dynamic Schedule Engine</h1>
-        <p style={styles.subtitle}>Real-time scheduling with interval overlap prevention.</p>
+    <div className="page">
+      <header className="header">
+        <div className="badge">✨ SLOTFORGE • VIBRANT SCHEDULER</div>
+        <h1 className="title">Dynamic Schedule Engine</h1>
+        <p className="subtitle">Real-time scheduling with interval overlap prevention.</p>
       </header>
 
-      {/* REFINED VISUAL TIMELINE BAR */}
-      <section style={styles.timelineCard}>
-        <div style={styles.timelineHeader}>
-          <h3 style={styles.timelineTitle}>📊 24-Hour Occupancy Map</h3>
-          <span style={styles.timelineSub}>Visual time allocation</span>
+      <section className="timeline-card">
+        <div className="timeline-header">
+          <h3 className="timeline-title">📊 24-Hour Occupancy Map</h3>
+          <span className="timeline-sub">Visual time allocation</span>
         </div>
-        <div style={styles.timelineTrack}>
+        <div className="timeline-track">
           {slots.map((slot) => {
             const pos = getSlotPosition(slot);
             return (
               <div
                 key={slot.id}
-                style={{ ...styles.timelineBlock, left: pos.left, width: pos.width }}
+                className="timeline-block"
+                style={{ left: pos.left, width: pos.width }}
                 title={`${slot.title} (${formatTime(slot.startTime)} - ${formatTime(slot.endTime)})`}
               >
-                <span style={styles.blockLabel}>{slot.title}</span>
+                <span className="block-label">{slot.title}</span>
               </div>
             );
           })}
         </div>
-        <div style={styles.timelineScale}>
+        <div className="timeline-scale">
           <span>12 AM</span>
           <span>06 AM</span>
           <span>12 PM</span>
@@ -167,57 +165,57 @@ export function App() {
         </div>
       </section>
 
-      <main style={styles.mainContainer}>
-        {/* CREATION FORM */}
-        <section style={styles.card}>
-          <h2 style={styles.cardTitle}>➕ Create Time Slot</h2>
+      <main className="main-container">
+        <section className="card">
+          <h2 className="card-title">➕ Create Time Slot</h2>
 
-          {error && <div style={styles.errorBox}>⚠️ {error}</div>}
-          {success && <div style={styles.successBox}>✅ {success}</div>}
+          {error && <div className="error-box">⚠️ {error}</div>}
+          {success && <div className="success-box">🎉 {success}</div>}
 
-          <form onSubmit={handleSubmit} style={styles.form}>
-            <div style={styles.fieldGroup}>
-              <label style={styles.label}>Slot Title</label>
+          <form onSubmit={handleSubmit} className="form">
+            <div className="field-group">
+              <label className="label">Slot Title</label>
               <input
                 type="text"
                 placeholder="e.g. System Architecture Review"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                style={styles.input}
+                className="input"
               />
             </div>
 
-            <div style={styles.fieldGroup}>
-              <label style={styles.label}>Start Time</label>
+            <div className="field-group">
+              <label className="label">Start Time</label>
               <input
                 type="datetime-local"
                 value={startTime}
                 onChange={(e) => setStartTime(e.target.value)}
-                style={styles.input}
+                className="input"
               />
             </div>
 
-            <div style={styles.fieldGroup}>
-              <label style={styles.label}>End Time</label>
+            <div className="field-group">
+              <label className="label">End Time</label>
               <input
                 type="datetime-local"
                 value={endTime}
                 onChange={(e) => setEndTime(e.target.value)}
-                style={styles.input}
+                className="input"
               />
             </div>
 
-            {/* LIVE AVAILABILITY FEEDBACK */}
             {startTime && endTime && (
-              <div style={styles.availabilityBox}>
+              <div className="availability-box">
                 {!isValidRange ? (
-                  <span style={{ color: "#f87171" }}>⚠️ End time must be after start time.</span>
+                  <span style={{ color: "#e11d48", fontWeight: 600 }}>⚠️ End time must be after start time.</span>
                 ) : hasConflict ? (
-                  <span style={{ color: "#f87171" }}>
+                  <span style={{ color: "#e11d48", fontWeight: 600 }}>
                     🔴 <strong>Slot Occupied:</strong> Overlaps with "{conflictingSlot?.title}"
                   </span>
                 ) : (
-                  <span style={{ color: "#4ade80" }}>🟢 <strong>Slot Available:</strong> No interval collisions detected.</span>
+                  <span style={{ color: "#059669", fontWeight: 600 }}>
+                    🟢 <strong>Slot Available:</strong> No interval collisions detected.
+                  </span>
                 )}
               </div>
             )}
@@ -225,42 +223,47 @@ export function App() {
             <button
               type="submit"
               disabled={loading || hasConflict || !isValidRange}
+              className="primary-button"
               style={{
-                ...styles.primaryButton,
                 opacity: loading || hasConflict || !isValidRange ? 0.5 : 1,
                 cursor: loading || hasConflict || !isValidRange ? "not-allowed" : "pointer",
               }}
             >
-              {loading ? "Reserving Slot..." : "Reserve Slot"}
+              {loading ? "Reserving Slot..." : "Reserve Slot ✨"}
             </button>
           </form>
         </section>
 
-        {/* ACTIVE SLOTS LIST */}
-        <section style={styles.card}>
-          <div style={styles.listHeader}>
-            <h2 style={styles.cardTitle}>📅 Reserved Slots</h2>
-            <span style={styles.countBadge}>{slots.length} Active</span>
+        <section className="card">
+          <div className="list-header">
+            <h2 className="card-title">📅 Reserved Slots</h2>
+            <span className="count-badge">{slots.length} Active</span>
           </div>
 
           {slots.length === 0 ? (
-            <div style={styles.emptyState}>
-              <p>No time slots scheduled yet.</p>
-              <small>Use the form on the left to add your first slot.</small>
+            <div className="empty-state">
+              <p style={{ margin: "0 0 6px 0", fontSize: "1.05rem", fontWeight: 600, color: "#4b5563" }}>
+                No time slots scheduled yet.
+              </p>
+              <small style={{ color: "#9ca3af" }}>Use the form to add your first slot.</small>
             </div>
           ) : (
-            <div style={styles.slotList}>
-              {slots.map((slot) => (
-                <div key={slot.id} style={styles.slotItem}>
-                  <div style={styles.slotDetails}>
-                    <h3 style={styles.slotTitle}>{slot.title}</h3>
-                    <div style={styles.timeRange}>
+            <div className="slot-list">
+              {slots.map((slot, idx) => (
+                <div
+                  key={slot.id}
+                  className="slot-item"
+                  style={{ animationDelay: `${idx * 0.05}s` }}
+                >
+                  <div className="slot-details">
+                    <h3 className="slot-title">{slot.title}</h3>
+                    <div className="time-range">
                       <span>🕒 {formatTime(slot.startTime)}</span>
                       <span style={{ margin: "0 6px", opacity: 0.5 }}>→</span>
                       <span>{formatTime(slot.endTime)}</span>
                     </div>
                   </div>
-                  <button onClick={() => handleDelete(slot.id)} style={styles.deleteButton}>
+                  <button onClick={() => handleDelete(slot.id)} className="delete-button">
                     Delete
                   </button>
                 </div>
@@ -272,243 +275,5 @@ export function App() {
     </div>
   );
 }
-
-const styles: Record<string, React.CSSProperties> = {
-  page: {
-    minHeight: "100vh",
-    backgroundColor: "#0b0f19",
-    color: "#f8fafc",
-    fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
-    padding: "40px 20px",
-  },
-  header: {
-    textAlign: "center",
-    marginBottom: "30px",
-  },
-  badge: {
-    display: "inline-block",
-    padding: "4px 12px",
-    borderRadius: "20px",
-    backgroundColor: "#1e293b",
-    color: "#38bdf8",
-    fontSize: "0.75rem",
-    fontWeight: "bold",
-    letterSpacing: "1px",
-    marginBottom: "12px",
-    border: "1px solid #334155",
-  },
-  title: {
-    fontSize: "2.2rem",
-    fontWeight: 800,
-    margin: "0 0 8px 0",
-    letterSpacing: "-0.5px",
-  },
-  subtitle: {
-    color: "#94a3b8",
-    fontSize: "1rem",
-    margin: 0,
-  },
-  timelineCard: {
-    maxWidth: "1100px",
-    margin: "0 auto 30px auto",
-    backgroundColor: "#111827",
-    borderRadius: "12px",
-    padding: "20px",
-    border: "1px solid #1f2937",
-    boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.5)",
-  },
-  timelineHeader: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: "14px",
-  },
-  timelineTitle: {
-    margin: 0,
-    fontSize: "1rem",
-    color: "#f3f4f6",
-  },
-  timelineSub: {
-    fontSize: "0.8rem",
-    color: "#6b7280",
-  },
-  timelineTrack: {
-    position: "relative",
-    height: "38px",
-    backgroundColor: "#030712",
-    borderRadius: "8px",
-    border: "1px solid #1f2937",
-    overflow: "hidden",
-  },
-  timelineBlock: {
-    position: "absolute",
-    top: "3px",
-    bottom: "3px",
-    backgroundColor: "#0369a1",
-    backgroundImage: "linear-gradient(135deg, #0284c7 0%, #0369a1 100%)",
-    border: "1px solid #38bdf8",
-    borderRadius: "6px",
-    display: "flex",
-    alignItems: "center",
-    padding: "0 8px",
-    boxShadow: "0 2px 8px rgba(2, 132, 199, 0.4)",
-    transition: "all 0.2s ease",
-  },
-  blockLabel: {
-    fontSize: "0.75rem",
-    fontWeight: 700,
-    color: "#ffffff",
-    textOverflow: "ellipsis",
-    overflow: "hidden",
-    whiteSpace: "nowrap",
-  },
-  timelineScale: {
-    display: "flex",
-    justifyContent: "space-between",
-    marginTop: "10px",
-    fontSize: "0.75rem",
-    color: "#6b7280",
-    padding: "0 4px",
-  },
-  mainContainer: {
-    maxWidth: "1100px",
-    margin: "0 auto",
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(340px, 1fr))",
-    gap: "24px",
-    alignItems: "start",
-  },
-  card: {
-    backgroundColor: "#111827",
-    borderRadius: "12px",
-    padding: "24px",
-    border: "1px solid #1f2937",
-    boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.5)",
-  },
-  cardTitle: {
-    fontSize: "1.25rem",
-    fontWeight: 700,
-    margin: "0 0 20px 0",
-    color: "#f3f4f6",
-  },
-  form: {
-    display: "flex",
-    flexDirection: "column",
-    gap: "16px",
-  },
-  fieldGroup: {
-    display: "flex",
-    flexDirection: "column",
-    gap: "6px",
-  },
-  label: {
-    fontSize: "0.85rem",
-    fontWeight: 600,
-    color: "#9ca3af",
-  },
-  input: {
-    backgroundColor: "#030712",
-    border: "1px solid #1f2937",
-    borderRadius: "6px",
-    padding: "10px 12px",
-    color: "#fff",
-    fontSize: "0.95rem",
-    outline: "none",
-  },
-  availabilityBox: {
-    padding: "10px",
-    backgroundColor: "#030712",
-    borderRadius: "6px",
-    border: "1px solid #1f2937",
-    fontSize: "0.85rem",
-  },
-  primaryButton: {
-    marginTop: "8px",
-    backgroundColor: "#0284c7",
-    color: "#ffffff",
-    border: "none",
-    borderRadius: "6px",
-    padding: "12px",
-    fontWeight: "bold",
-    fontSize: "0.95rem",
-  },
-  listHeader: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: "20px",
-  },
-  countBadge: {
-    backgroundColor: "#030712",
-    color: "#38bdf8",
-    padding: "4px 10px",
-    borderRadius: "12px",
-    fontSize: "0.8rem",
-    fontWeight: "bold",
-    border: "1px solid #1f2937",
-  },
-  emptyState: {
-    textAlign: "center",
-    padding: "40px 20px",
-    color: "#6b7280",
-  },
-  slotList: {
-    display: "flex",
-    flexDirection: "column",
-    gap: "12px",
-  },
-  slotItem: {
-    backgroundColor: "#030712",
-    borderRadius: "8px",
-    padding: "14px 16px",
-    border: "1px solid #1f2937",
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  slotDetails: {
-    display: "flex",
-    flexDirection: "column",
-    gap: "4px",
-  },
-  slotTitle: {
-    margin: 0,
-    fontSize: "1rem",
-    fontWeight: 600,
-    color: "#f8fafc",
-  },
-  timeRange: {
-    fontSize: "0.82rem",
-    color: "#9ca3af",
-  },
-  deleteButton: {
-    backgroundColor: "#7f1d1d",
-    color: "#fca5a5",
-    border: "1px solid #991b1b",
-    borderRadius: "4px",
-    padding: "6px 12px",
-    fontSize: "0.8rem",
-    fontWeight: 600,
-    cursor: "pointer",
-  },
-  errorBox: {
-    backgroundColor: "#450a0a",
-    border: "1px solid #dc2626",
-    color: "#fca5a5",
-    padding: "10px 14px",
-    borderRadius: "6px",
-    fontSize: "0.88rem",
-    marginBottom: "16px",
-  },
-  successBox: {
-    backgroundColor: "#064e3b",
-    border: "1px solid #059669",
-    color: "#6ee7b7",
-    padding: "10px 14px",
-    borderRadius: "6px",
-    fontSize: "0.88rem",
-    marginBottom: "16px",
-  },
-};
 
 export default App;
