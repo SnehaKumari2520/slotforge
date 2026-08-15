@@ -1,5 +1,4 @@
 import axios from "axios";
-
 export interface Slot {
   id: string;
   title: string;
@@ -13,7 +12,7 @@ export interface CreateSlotInput {
   endTime: string;
 }
 
-const API_BASE_URL = "http://localhost:3000/api";
+const API_BASE_URL = "https://slotforge-f5fs.onrender.com/api";
 
 export const fetchSlots = async (): Promise<Slot[]> => {
   const response = await axios.get<Slot[]>(`${API_BASE_URL}/slots`);
