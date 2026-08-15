@@ -29,13 +29,15 @@
 ---
 
 ### 2. Overlap Detection Logic (Interval Scheduling Problem)
-To prevent scheduling collisions where a new slot time range $[T_{\text{new\_start}}, T_{\text{new\_end}}]$ conflicts with an existing slot $[T_{\text{exist\_start}}, T_{\text{exist\_end}}]$,
+To prevent scheduling collisions where a new slot time range `New_Start < Exist_End` AND `New_End > Exist_Start`
+
 I implemented mathematical interval comparison logic:
 
 Two time intervals overlap **if and only if** the start of the new interval occurs before the end of the existing interval **AND**
 the end of the new interval occurs after the start of the existing interval:
 
-$$\text{Overlap} \iff (T_{\text{new\_start}} < T_{\text{exist\_end}}) \land (T_{\text{new\_end}} > T_{\text{exist\_start}})$$
+(New_Start < Exist_End) AND (New_End > Exist_Start)
+
 
 * **Frontend Pre-flight Check:** Validates input timestamps instantly to display real-time availability badges before submission.
 * **Backend Guard:** Re-verifies intervals server-side using the same mathematical constraint to prevent race conditions and illegal database writes.
