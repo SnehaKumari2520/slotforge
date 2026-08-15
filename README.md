@@ -2,7 +2,7 @@
 
 **SlotForge Simulations** is a full-stack, high-performance web application designed to schedule, simulate, and analyze slot machine performance and interval time allocations in real time.
 
-🔗 **Live Demo:** [slotforge-simulations.vercel.app]((https://slotforge-dun.vercel.app/))
+🔗 **Live Demo:** [slotforge-dun.vercel.app](https://slotforge-dun.vercel.app/)
 
 ---
 
