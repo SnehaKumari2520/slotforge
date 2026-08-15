@@ -3,6 +3,11 @@ import { SlotEngine } from "./engine/SlotEngine.js";
 import {CreateSlotSchema} from "./schema/slot.schema.js";
 
 const app = express();
+
+import cors from "cors";
+
+// Add this right after const app = express();
+app.use(cors());
 const engine = new SlotEngine();
 
 // ⚠️ THIS LINE IS REQUIRED to parse JSON requests from Postman
